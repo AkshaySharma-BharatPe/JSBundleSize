@@ -14,6 +14,12 @@ inputs:
     description: 'output path for the build package'
     required: true
     default: 'dist'
+  base_branch:
+    required: true
+    default: 'dist'
+  head_branch:
+    required: true
+    default: 'dist'
 runs:
   using: 'node16'
   main: 'dist/index.js'
