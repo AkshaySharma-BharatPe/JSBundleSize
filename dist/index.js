@@ -26406,6 +26406,7 @@ async function run() {
     console.log("Branch Names", base_branch, head_branch);
 
     console.log(`Switching Branch`)
+    await exec.exec(`git --version`)
     await exec.exec(`git switch main`)
 
     console.log(`Bootstrapping repo`);
