@@ -26407,9 +26407,8 @@ async function run() {
 
     console.log(`Switching Branch`)
     await exec.exec(`git branch`)
-    await exec.exec(`git branch main`)
+    await exec.exec(`git branch temp`)
     await exec.exec(`git checkout main`)
-    await exec.exec(`git pull origin main --rebase`)
 
     console.log(`Bootstrapping repo`);
     await exec.exec(bootstrap);
