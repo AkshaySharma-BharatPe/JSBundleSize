@@ -26399,12 +26399,14 @@ async function run() {
     // --------------- Build repo  ---------------
     const bootstrap = core.getInput("bootstrap"),
       build_command = core.getInput("build_command"),
-      dist_path = core.getInput("dist_path");
-    
-    const base_branch = core.getInput("base_branch");
-    const head_branch = core.getInput("head_branch");
+      dist_path = core.getInput("dist_path"),
+      base_branch = core.getInput("base_branch"),
+      head_branch = core.getInput("head_branch");
 
     console.log("Branch Names", base_branch, head_branch);
+
+    console.log(`Switching Branch`)
+    await exec.exec(`git switch main`)
 
     console.log(`Bootstrapping repo`);
     await exec.exec(bootstrap);
