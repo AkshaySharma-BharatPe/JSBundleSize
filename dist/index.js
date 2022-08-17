@@ -26406,7 +26406,7 @@ async function run() {
     console.log("Branch Names", base_branch, head_branch);
 
     console.log(`Switching Branch`)
-    await exec.exec(`git --version`)
+    await exec.exec(`git branch`)
     await exec.exec(`git branch main`)
     await exec.exec(`git checkout main`)
     await exec.exec(`git pull origin main --rebase`)
