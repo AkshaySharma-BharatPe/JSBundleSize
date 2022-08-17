@@ -29,7 +29,7 @@ async function run() {
     await exec.exec(`git --version`)
     await exec.exec(`git branch main`)
     await exec.exec(`git checkout main`)
-    await exec.exec(`git pull origin main`)
+    await exec.exec(`git pull origin main --rebase`)
 
     console.log(`Bootstrapping repo`);
     await exec.exec(bootstrap);
