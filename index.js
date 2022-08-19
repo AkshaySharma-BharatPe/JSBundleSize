@@ -79,7 +79,7 @@ async function run() {
       // });
       const arrOp =  arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
-        if(!isNaN(parseInt(i[0]) * 1000)){
+        if(parseInt(i[0]) * 1000){
           return parseInt(i[0]) * 1000;
         }
       })
