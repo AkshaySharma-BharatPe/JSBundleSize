@@ -26445,42 +26445,33 @@ async function run() {
       };
       await exec.exec(`du ${dist_path}`, null, outputOptions);
       core.setOutput("size", sizeCalOutput);
-      const context = github.context,
-        pull_request = context.payload.pull_request;
 
       const arrayOutput = sizeCalOutput.split("\n");
-      let result = `Bundled size for the package is listed below - ${item}: \n \n`;
-      // arrayOutput.forEach((item) => {
-      //   const i = item.split(/(\s+)/);
-      //   if (item) {
-      //     // result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
-      //     result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
-      //   }
-      // });
+
       const arrOp = arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
         return parseInt(i[0]) * 1000;
       });
 
       branchesStats.push(arrOp);
-
-      if (pull_request) {
-        // on pull request commit push add comment to pull request
-        octokit.issues.createComment(
-          Object.assign(Object.assign({}, context.repo), {
-            issue_number: pull_request.number,
-            body: result,
-          })
-        );
-      }
     }
 
     const statsDifference = [];
-
     for (let i = 0; i < 4; i++) {
-      statsDifference.push(branchesStats[1][i] - branchesStats[0][i]);
+      statsDifference.push(bytesToSize(branchesStats[1][i] - branchesStats[0][i]));
     }
 
+    const context = github.context,
+    pull_request = context.payload.pull_request;
+
+    if (pull_request) {
+      octokit.issues.createComment(
+        Object.assign(Object.assign({}, context.repo), {
+          issue_number: pull_request.number,
+          body: statsDifference,
+        })
+      );
+    }
     console.table(statsDifference);
 
     // --------------- End Comment repo size  ---------------
