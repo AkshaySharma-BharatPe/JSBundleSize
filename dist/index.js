@@ -26459,6 +26459,7 @@ async function run() {
       // });
       const arrOp =  arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
+        console.log('item', item);
         if(item !== ''){
           return parseInt(i[0]) * 1000;
         }
