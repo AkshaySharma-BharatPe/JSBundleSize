@@ -70,14 +70,19 @@ async function run() {
 
       const arrayOutput = sizeCalOutput.split("\n");
       let result = `Bundled size for the package is listed below - ${item}: \n \n`;
-      arrayOutput.forEach((item) => {
+      // arrayOutput.forEach((item) => {
+      //   const i = item.split(/(\s+)/);
+      //   if (item) {
+      //     // result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
+      //     result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
+      //   }
+      // });
+      const arrOp =  arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
-        if (item) {
-          result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
-        }
-      });
+        return bytesToSize(parseInt(i[0]) * 1000);
+      })
 
-      branchesStats.push(arrayOutput);
+      branchesStats.push(arrOp);
 
       if (pull_request) {
         // on pull request commit push add comment to pull request
