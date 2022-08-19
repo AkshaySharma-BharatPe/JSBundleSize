@@ -17,83 +17,76 @@ async function run() {
     // --------------- End octokit initialization ---------------
     // ---------------Action Initialization----------------------
     const bootstrap = core.getInput("bootstrap"),
-    build_command = core.getInput("build_command"),
-    dist_path = core.getInput("dist_path"),
-    base_branch = core.getInput("base_branch"),
-    head_branch = core.getInput("head_branch");
+      build_command = core.getInput("build_command"),
+      dist_path = core.getInput("dist_path"),
+      base_branch = core.getInput("base_branch"),
+      head_branch = core.getInput("head_branch");
 
-  // Handle PR Branches 
-    await exec.exec(`git fetch`)
+    // Handle PR Branches
+    await exec.exec(`git fetch`);
 
     const branches = [base_branch, head_branch];
 
-    for(let item of branches){
-      console.log('item', item);
-    }
+    for (let item of branches) {
+      console.log("item", item);
+      console.log(`Switching Branch - ${item}`);
+      await exec.exec(`git checkout ${item}`);
 
-    console.log(`Switching Branch - ${base_branch}`)
-    await exec.exec(`git checkout ${base_branch}`)
+      //----------------------Action Initialization End-------------
 
-    //----------------------Action Initialization End-------------
+      // --------------- Build repo  ---------------
 
-    // --------------- Build repo  ---------------
+      console.log(`Bootstrapping repo`);
+      await exec.exec(bootstrap);
 
-    console.log(`Bootstrapping repo`);
-    await exec.exec(bootstrap);
+      console.log(`Building Changes`);
+      await exec.exec(build_command);
 
-    console.log(`Building Changes`);
-    await exec.exec(build_command);
-
-    core.setOutput("Building repo completed - 1st @ ", new Date().toTimeString());
-
-    // --------------- End Build repo  ---------------
-
-    // --------------- Comment repo size  ---------------
-    const outputOptions = {};
-    let sizeCalOutput = "";
-
-    outputOptions.listeners = {
-      stdout: data => {
-        sizeCalOutput += data.toString();
-      },
-      stderr: data => {
-        sizeCalOutput += data.toString();
-      }
-    };
-    await exec.exec(`du ${dist_path}`, null, outputOptions);
-    core.setOutput("size", sizeCalOutput);
-    const context = github.context,
-      pull_request = context.payload.pull_request;
-
-    const arrayOutput = sizeCalOutput.split("\n");
-    let result = `Bundled size for the package is listed below - ${head_branch}: \n \n`;
-    arrayOutput.forEach(item => {
-      const i = item.split(/(\s+)/);
-      if (item) {
-        result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
-      }
-    });
-
-    if (pull_request) {
-      // on pull request commit push add comment to pull request
-      octokit.issues.createComment(
-        Object.assign(Object.assign({}, context.repo), {
-          issue_number: pull_request.number,
-          body: result
-        })
+      core.setOutput(
+        "Building repo completed - 1st @ ",
+        new Date().toTimeString()
       );
-    } else {
-      // on commit push add comment to commit
-      octokit.repos.createCommitComment(
-        Object.assign(Object.assign({}, context.repo), {
-          commit_sha: github.context.sha,
-          body: result
-        })
-      );
+
+      // --------------- End Build repo  ---------------
+
+      // --------------- Comment repo size  ---------------
+      const outputOptions = {};
+      let sizeCalOutput = "";
+
+      outputOptions.listeners = {
+        stdout: (data) => {
+          sizeCalOutput += data.toString();
+        },
+        stderr: (data) => {
+          sizeCalOutput += data.toString();
+        },
+      };
+      await exec.exec(`du ${dist_path}`, null, outputOptions);
+      core.setOutput("size", sizeCalOutput);
+      const context = github.context,
+        pull_request = context.payload.pull_request;
+
+      const arrayOutput = sizeCalOutput.split("\n");
+      let result = `Bundled size for the package is listed below - ${item}: \n \n`;
+      arrayOutput.forEach((item) => {
+        const i = item.split(/(\s+)/);
+        if (item) {
+          result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
+        }
+      });
+
+      if (pull_request) {
+        // on pull request commit push add comment to pull request
+        octokit.issues.createComment(
+          Object.assign(Object.assign({}, context.repo), {
+            issue_number: pull_request.number,
+            body: result,
+          })
+        );
+      }
     }
 
     // --------------- End Comment repo size  ---------------
-
   } catch (error) {
     core.setFailed(error.message);
   }
