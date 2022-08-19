@@ -77,7 +77,7 @@ async function run() {
         }
       });
 
-      branchesStats.push(result);
+      branchesStats.push(arrayOutput);
 
       if (pull_request) {
         // on pull request commit push add comment to pull request
