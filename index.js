@@ -62,15 +62,6 @@ async function run() {
         const i = item.split(/(\s+)/);
         return parseInt(i[0]) * 1000;
       });
-
-      if (pull_request) {
-        octokit.issues.createComment(
-          Object.assign(Object.assign({}, context.repo), {
-            issue_number: pull_request.number,
-            body: result,
-          })
-        );
-      }
       branchesStats.push(arrOp);
     }
 
@@ -80,7 +71,7 @@ async function run() {
     }
 
     let result = "Bundled size for the package is listed below: \n \n";
-    statsDifference.forEach((item, index) => {
+    statsDifference.forEach((item) => {
       result += `${item} \n`;
     });
 
