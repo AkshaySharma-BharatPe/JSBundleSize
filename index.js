@@ -74,10 +74,10 @@ async function run() {
 
     const statsDifference = [];
     for (let i = 0; i < 4; i++) {
-      statsDifference.push(`${bytesToSize(branchesStats[1][i] - branchesStats[0][i])}`);
+      statsDifference.push(`${bytesToSize(branchesStats[0][i] - branchesStats[1][i])}`);
     }
 
-    let result = "Bundled size for the package is listed below: \n \n";
+    let result = "Bundled size Difference for the package is listed below: \n \n";
     statsDifference.forEach((item, index) => {
       result += `${branchesHeading[index]} - ${item} \n`;
     });
