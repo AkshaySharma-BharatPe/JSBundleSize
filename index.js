@@ -96,7 +96,10 @@ async function run() {
     }
 
     for (let item of branchesStats) {
-      console.log("branch stats", item);
+      for(let i=0; i<4; i++){
+        console.log(`branch stats - ${i}`, item[i]);
+      }
+      
     }
 
     const statsDifference = branchesStats.map((item) => {
