@@ -26459,8 +26459,9 @@ async function run() {
       // });
       const arrOp =  arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
-        console.log('jekheej', item, i);
-        return parseInt(i[0]) * 1000;
+        if(!isNaN(parseInt(i[0]) * 1000)){
+          return parseInt(i[0]) * 1000;
+        }
       })
 
       branchesStats.push(arrOp);
