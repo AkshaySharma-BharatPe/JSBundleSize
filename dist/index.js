@@ -26458,8 +26458,8 @@ async function run() {
     }
 
     let result = "Bundled size for the package is listed below: \n \n";
-    statsDifference.forEach((item) => {
-      result += `${item} \n`;
+    statsDifference.forEach((item, index) => {
+      result += `${branchesHeading[index]} - ${item} \n`;
     });
 
     if (pull_request) {
