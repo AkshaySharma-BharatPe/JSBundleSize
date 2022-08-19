@@ -79,7 +79,8 @@ async function run() {
       // });
       const arrOp =  arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
-        return bytesToSize(parseInt(i[0]) * 1000);
+        console.log('jekheej', item, i);
+        return parseInt(i[0]) * 1000;
       })
 
       branchesStats.push(arrOp);
