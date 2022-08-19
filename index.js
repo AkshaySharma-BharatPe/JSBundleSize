@@ -6,7 +6,7 @@ async function run() {
   function bytesToSize(bytes) {
     const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
     if (bytes === 0) return "0 Byte";
-    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    const i = parseInt(Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)));
     return (bytes / Math.pow(1024, i)).toFixed(2) + " " + sizes[i];
   }
 
@@ -74,9 +74,7 @@ async function run() {
 
     const statsDifference = [];
     for (let i = 0; i < 4; i++) {
-      // statsDifference.push(`${bytesToSize(branchesStats[1][i] - branchesStats[0][i])}`);
-      statsDifference.push(`${branchesStats[0][i] - branchesStats[1][i]}`);
-
+      statsDifference.push(`${bytesToSize(branchesStats[0][i] - branchesStats[1][i])}`);
     }
 
     let result = "Bundled size Difference for the package is listed below: \n \n";
