@@ -78,7 +78,7 @@ async function run() {
 
     const statsDifference = [];
     for (let i = 0; i < 4; i++) {
-      statsDifference.push(bytesToSize(branchesStats[1][i] - branchesStats[0][i]));
+      statsDifference.push(branchesStats[1][i] - branchesStats[0][i]);
     }
 
     const context = github.context,
