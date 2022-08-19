@@ -26390,35 +26390,25 @@ async function run() {
     return (bytes / Math.pow(1024, i)).toFixed(2) + " " + sizes[i];
   }
   try {
-    // --------------- octokit initialization  ---------------
     const token = core.getInput("token");
     console.log("Initializing oktokit with token", token);
     const octokit = new github.GitHub(token);
     const context = github.context,
     pull_request = context.payload.pull_request;
-    // --------------- End octokit initialization ---------------
-    // ---------------Action Initialization----------------------
     const bootstrap = core.getInput("bootstrap"),
       build_command = core.getInput("build_command"),
       dist_path = core.getInput("dist_path"),
       base_branch = core.getInput("base_branch"),
       head_branch = core.getInput("head_branch");
 
-    // Handle PR Branches
     await exec.exec(`git fetch`);
-
     const branches = [head_branch, base_branch];
-
     const branchesStats = [];
 
     for (let item of branches) {
       console.log("item", item);
       console.log(`Switching Branch - ${item}`);
       await exec.exec(`git checkout ${item}`);
-
-      //----------------------Action Initialization End-------------
-
-      // --------------- Build repo  ---------------
 
       console.log(`Bootstrapping repo`);
       await exec.exec(bootstrap);
@@ -26431,9 +26421,7 @@ async function run() {
         new Date().toTimeString()
       );
 
-      // --------------- End Build repo  ---------------
 
-      // --------------- Comment repo size  ---------------
       const outputOptions = {};
       let sizeCalOutput = "";
 
@@ -26450,19 +26438,10 @@ async function run() {
 
       const arrayOutput = sizeCalOutput.split("\n");
 
-      const context = github.context,
-      pull_request = context.payload.pull_request;
-
-      let result = "Bundled size for the package is listed below: \n \n";
       const arrOp = arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
-        if (item) {
-          result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
-        }
         return parseInt(i[0]) * 1000;
       });
-
-      console.warn(typeof result, result);
 
       if (pull_request) {
         octokit.issues.createComment(
@@ -26472,7 +26451,6 @@ async function run() {
           })
         );
       }
-
       branchesStats.push(arrOp);
     }
 
@@ -26481,20 +26459,24 @@ async function run() {
       statsDifference.push(`${bytesToSize(branchesStats[1][i] - branchesStats[0][i])}`);
     }
 
-    let resultv2 = "Bundled size for the package is listed belowsss ------------: \n \n";
-    statsDifference.forEach(item => {
-      resultv2 += `${item} \n`;
+    let result = "Bundled size for the package is listed below: \n \n";
+    statsDifference.forEach((item, index) => {
+      result += `${item} \n`;
     });
 
     if (pull_request) {
       octokit.issues.createComment(
         Object.assign(Object.assign({}, context.repo), {
           issue_number: pull_request.number,
-          body: resultv2,
+          body: result,
         })
       );
     }
     console.table(statsDifference);
+    core.setOutput('base_file_size', branchesStats[1][0])
+    core.setOutput('base_file_string', branchesStats[1][1])
+    core.setOutput('pr_file_size', branchesStats[0][0])
+    core.setOutput('pr_file_string', branchesStats[0][1])
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
