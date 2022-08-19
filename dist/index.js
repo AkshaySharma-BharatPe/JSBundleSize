@@ -26457,10 +26457,10 @@ async function run() {
       //     result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
       //   }
       // });
-      const arrOp =  arrayOutput.map((item) => {
+      const arrOp = arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
-          return parseInt(i[0]) * 1000;
-      })
+        return parseInt(i[0]) * 1000;
+      });
 
       branchesStats.push(arrOp);
 
@@ -26475,12 +26475,14 @@ async function run() {
       }
     }
 
-    for(let item of branchesStats){
-      console.log('branch stats', item);
+    for (let item of branchesStats) {
+      console.log("branch stats", item);
     }
 
     const statsDifference = branchesStats.map((item) => {
-        return item[1] - item[0];
+      for (let i = 0; i < 4; i++) {
+        return item[1][i] - item[0][i];
+      }
     });
 
     console.table(statsDifference);
