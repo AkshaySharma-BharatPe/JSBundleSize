@@ -25,12 +25,6 @@ async function run() {
 
     console.log("Branch Names", base_branch, head_branch);
 
-    console.log(`Switching Branch`)
-    await exec.exec(`git fetch`)
-    await exec.exec(`git branch`)
-    await exec.exec(`git branch temp`)
-    await exec.exec(`git checkout main`)
-
     console.log(`Bootstrapping repo`);
     await exec.exec(bootstrap);
 
@@ -86,6 +80,68 @@ async function run() {
     }
 
     // --------------- End Comment repo size  ---------------
+
+    console.log(`Switching Branch`)
+    await exec.exec(`git fetch`)
+    await exec.exec(`git branch`)
+    await exec.exec(`git branch temp`)
+    await exec.exec(`git checkout main`)
+
+
+    console.log(`Building Changes`);
+    await exec.exec(build_command);
+
+    core.setOutput("Building repo completed @ ", new Date().toTimeString());
+
+    // --------------- End Build repo  ---------------
+
+    // --------------- Comment repo size  ---------------
+    const outputOptionsMain = {};
+    let sizeCalOutputMain = "";
+
+    outputOptionsMain.listeners = {
+      stdout: data => {
+        sizeCalOutputMain += data.toString();
+      },
+      stderr: data => {
+        sizeCalOutputMain += data.toString();
+      }
+    };
+    await exec.exec(`du ${dist_path}`, null, outputOptionsMain);
+    core.setOutput("size", sizeCalOutputMain);
+    const contextMain = github.context,
+      pull_requestMain = contextMain.payload.pull_request;
+
+    const arrayOutputMain = sizeCalOutput.split("\n");
+    let resultMain = "Bundled size for the package is listed below: \n \n";
+    arrayOutputMain.forEach(item => {
+      const i = item.split(/(\s+)/);
+      if (item) {
+        resultMain += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
+      }
+    });
+
+    if (pull_request) {
+      // on pull request commit push add comment to pull request
+      octokit.issues.createComment(
+        Object.assign(Object.assign({}, contextMain.repo), {
+          issue_number: pull_requestMain.number,
+          body: resultMain
+        })
+      );
+    } else {
+      // on commit push add comment to commit
+      octokit.repos.createCommitComment(
+        Object.assign(Object.assign({}, contextMain.repo), {
+          commit_sha: github.contextMain.sha,
+          body: resultMain
+        })
+      );
+    }
+
+    // --------------- End Comment repo size  ---------------
+
+
   } catch (error) {
     core.setFailed(error.message);
   }
