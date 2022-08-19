@@ -68,30 +68,37 @@ async function run() {
 
       const arrayOutput = sizeCalOutput.split("\n");
 
+      const context = github.context,
+      pull_request = context.payload.pull_request;
+
+      let result = "Bundled size for the package is listed below: \n \n";
       const arrOp = arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
+        if (item) {
+          result += `**${i[2]}**: ${bytesToSize(parseInt(i[0]) * 1000)} \n`;
+        }
         return parseInt(i[0]) * 1000;
       });
+
+      console.warn(typeof result, result);
+
+      if (pull_request) {
+        octokit.issues.createComment(
+          Object.assign(Object.assign({}, context.repo), {
+            issue_number: pull_request.number,
+            body: result,
+          })
+        );
+      }
 
       branchesStats.push(arrOp);
     }
 
     const statsDifference = [];
     for (let i = 0; i < 4; i++) {
-      statsDifference.push(branchesStats[1][i] - branchesStats[0][i]);
+      statsDifference.push(bytesToSize(branchesStats[1][i] - branchesStats[0][i]));
     }
 
-    const context = github.context,
-    pull_request = context.payload.pull_request;
-
-    if (pull_request) {
-      octokit.issues.createComment(
-        Object.assign(Object.assign({}, context.repo), {
-          issue_number: pull_request.number,
-          body: statsDifference,
-        })
-      );
-    }
     console.table(statsDifference);
 
     // --------------- End Comment repo size  ---------------
