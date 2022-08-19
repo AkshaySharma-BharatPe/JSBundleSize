@@ -74,9 +74,9 @@ async function run() {
 
     const statsDifference = [];
     for (let i = 0; i < 4; i++) {
-      console.table(branchesStats[0][i]);
-      console.table(branchesStats[1][i]);
-      statsDifference.push(`${bytesToSize(branchesStats[1][i] - branchesStats[0][i])}`);
+      // statsDifference.push(`${bytesToSize(branchesStats[1][i] - branchesStats[0][i])}`);
+      statsDifference.push(`${branchesStats[0][i] - branchesStats[1][i]}`);
+
     }
 
     let result = "Bundled size Difference for the package is listed below: \n \n";
