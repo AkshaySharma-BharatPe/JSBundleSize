@@ -26407,6 +26407,8 @@ async function run() {
 
     const branches = [base_branch, head_branch];
 
+    const branchesStats = [];
+
     for (let item of branches) {
       console.log("item", item);
       console.log(`Switching Branch - ${item}`);
@@ -26455,6 +26457,8 @@ async function run() {
         }
       });
 
+      branchesStats.push(result);
+
       if (pull_request) {
         // on pull request commit push add comment to pull request
         octokit.issues.createComment(
@@ -26464,6 +26468,10 @@ async function run() {
           })
         );
       }
+    }
+
+    for(let item of branchesStats){
+      console.log('branch stats', item);
     }
 
     // --------------- End Comment repo size  ---------------
