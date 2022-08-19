@@ -26405,7 +26405,7 @@ async function run() {
     // Handle PR Branches
     await exec.exec(`git fetch`);
 
-    const branches = [base_branch, head_branch];
+    const branches = [head_branch, base_branch];
 
     const branchesStats = [];
 
@@ -26459,10 +26459,7 @@ async function run() {
       // });
       const arrOp =  arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
-        console.log('item', item);
-        if(item){
           return parseInt(i[0]) * 1000;
-        }
       })
 
       branchesStats.push(arrOp);
@@ -26481,6 +26478,12 @@ async function run() {
     for(let item of branchesStats){
       console.log('branch stats', item);
     }
+
+    const statsDifference = branchesStats.map((item) => {
+        return item[1] - item[0];
+    });
+
+    console.table(statsDifference);
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
