@@ -26475,18 +26475,11 @@ async function run() {
       }
     }
 
-    for (let item of branchesStats) {
-      for(let i=0; i<4; i++){
-        console.log(`branch stats - ${i}`, item[i]);
-      }
-      
-    }
+    const statsDifference = [];
 
-    const statsDifference = branchesStats.map((item) => {
-      for (let i = 0; i < 4; i++) {
-        return item[1][i] - item[0][i];
-      }
-    });
+    for (let i = 0; i < 4; i++) {
+      statsDifference.push(branchesStats[1][i] - branchesStats[0][i]);
+    }
 
     console.table(statsDifference);
 
