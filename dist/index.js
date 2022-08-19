@@ -26389,6 +26389,7 @@ async function run() {
     const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
     return (bytes / Math.pow(1024, i)).toFixed(2) + " " + sizes[i];
   }
+
   try {
     const token = core.getInput("token");
     console.log("Initializing oktokit with token", token);
@@ -26404,6 +26405,7 @@ async function run() {
     await exec.exec(`git fetch`);
     const branches = [head_branch, base_branch];
     const branchesStats = [];
+    const branchesHeading = [];
 
     for (let item of branches) {
       console.log("item", item);
@@ -26440,9 +26442,14 @@ async function run() {
 
       const arrOp = arrayOutput.map((item) => {
         const i = item.split(/(\s+)/);
+        branchesHeading.push(`${i[2]}`);
         return parseInt(i[0]) * 1000;
       });
       branchesStats.push(arrOp);
+    }
+
+    for(let i of branchesHeading){
+      console.log(i);
     }
 
     const statsDifference = [];
@@ -26464,10 +26471,6 @@ async function run() {
       );
     }
     console.table(statsDifference);
-    core.setOutput('base_file_size', branchesStats[1][0])
-    core.setOutput('base_file_string', branchesStats[1][1])
-    core.setOutput('pr_file_size', branchesStats[0][0])
-    core.setOutput('pr_file_string', branchesStats[0][1])
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
