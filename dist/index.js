@@ -26411,7 +26411,7 @@ async function run() {
     console.log(`Building Changes`);
     await exec.exec(build_command);
 
-    core.setOutput("Building repo completed @ ", new Date().toTimeString());
+    core.setOutput("Building repo completed - 1st @ ", new Date().toTimeString());
 
     // --------------- End Build repo  ---------------
 
@@ -26433,7 +26433,7 @@ async function run() {
       pull_request = context.payload.pull_request;
 
     const arrayOutput = sizeCalOutput.split("\n");
-    let result = "Bundled size for the package is listed below: \n \n";
+    let result = `Bundled size for the package is listed below - ${head_branch}: \n \n`;
     arrayOutput.forEach(item => {
       const i = item.split(/(\s+)/);
       if (item) {
@@ -26467,11 +26467,13 @@ async function run() {
     await exec.exec(`git branch temp`)
     await exec.exec(`git checkout main`)
 
+    console.log(`Bootstrapping repo`);
+    await exec.exec(bootstrap);
 
     console.log(`Building Changes`);
     await exec.exec(build_command);
 
-    core.setOutput("Building repo completed @ ", new Date().toTimeString());
+    core.setOutput("Building repo completed - 2nd @ ", new Date().toTimeString());
 
     // --------------- End Build repo  ---------------
 
@@ -26493,7 +26495,7 @@ async function run() {
       pull_requestMain = contextMain.payload.pull_request;
 
     const arrayOutputMain = sizeCalOutput.split("\n");
-    let resultMain = "Bundled size for the package is listed below: \n \n";
+    let resultMain = `Bundled size for the package is listed below - ${base_branch}: \n \n`;
     arrayOutputMain.forEach(item => {
       const i = item.split(/(\s+)/);
       if (item) {
