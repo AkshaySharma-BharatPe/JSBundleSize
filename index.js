@@ -16,13 +16,6 @@ async function run() {
     const octokit = new github.GitHub(token);
     // --------------- End octokit initialization ---------------
 
-    // Handle PR Branches 
-    await exec.exec(`git fetch`)
-    console.log(`Switching Branch - ${base_branch}`)
-    await exec.exec(`git checkout ${base_branch}`)
-    // await exec.exec(`git branch temp`)
-    // await exec.exec(`git checkout main`)
-
     // --------------- Build repo  ---------------
     const bootstrap = core.getInput("bootstrap"),
       build_command = core.getInput("build_command"),
@@ -31,6 +24,13 @@ async function run() {
       head_branch = core.getInput("head_branch");
 
     console.log("Branch Names", base_branch, head_branch);
+
+        // Handle PR Branches 
+        await exec.exec(`git fetch`)
+        console.log(`Switching Branch - ${base_branch}`)
+        await exec.exec(`git checkout ${base_branch}`)
+        // await exec.exec(`git branch temp`)
+        // await exec.exec(`git checkout main`)
 
     console.log(`Bootstrapping repo`);
     await exec.exec(bootstrap);
