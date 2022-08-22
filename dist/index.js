@@ -26472,6 +26472,22 @@ async function run() {
     }
     console.table(statsDifference);
 
+    const resultv2 = `
+    | First Header  | Second Header |
+    | ------------- | ------------- |
+    | Content Cell  | Content Cell  |
+    | Content Cell  | Content Cell  |
+    `
+
+    if (pull_request) {
+      octokit.issues.createComment(
+        Object.assign(Object.assign({}, context.repo), {
+          issue_number: pull_request.number,
+          body: resultv2,
+        })
+      );
+    }
+
     // --------------- End Comment repo size  ---------------
   } catch (error) {
     core.setFailed(error.message);
