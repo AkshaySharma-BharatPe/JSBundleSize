@@ -93,10 +93,12 @@ async function run() {
     console.table(statsDifference);
 
     const resultv2 = `
-    | First Header  | Second Header |
-    | ------------- | ------------- |
-    | Content Cell  | Content Cell  |
-    | Content Cell  | Content Cell  |
+    | Files Type  | Old Size (${head_branch}) | New Size (${base_branch}) | Difference 
+    | ------------- | ------------- |  ------------- | ------------- |
+    | ${branchesHeading[0]}  | ${bytesToSize(branchesStats[0][0])}  |   ${bytesToSize(branchesStats[1][0])}  | ${bytesToSize(branchesStats[0][0] - branchesStats[1][0])}
+    | ${branchesHeading[1]}  | ${bytesToSize(branchesStats[0][1])} |   ${bytesToSize(branchesStats[1][1])}  | ${bytesToSize(branchesStats[0][1] - branchesStats[1][1])}
+    | ${branchesHeading[2]}  | ${bytesToSize(branchesStats[0][2])}  |   ${bytesToSize(branchesStats[1][2])}  | ${bytesToSize(branchesStats[0][2] - branchesStats[1][2])}
+    | ${branchesHeading[3]}  | ${bytesToSize(branchesStats[0][3])}  |   ${bytesToSize(branchesStats[1][3])}  | ${bytesToSize(branchesStats[0][3] - branchesStats[1][3])}
     `
 
     if (pull_request) {
