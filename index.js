@@ -45,8 +45,41 @@ async function run() {
     const branchesStats = [];
     const branchesHeading = [];
 
-    console.log(branches, branchesStats, branchesHeading);
+    for (let item of branches) {
+      await exec.exec(`git checkout ${item}`);
+      await exec.exec(inputs.bootstrap);
+      await exec.exec(inputs.build_command);
 
+      core.setOutput(
+        "Building repo completed - 1st @ ",
+        new Date().toTimeString()
+      );
+
+      const outputOptions = {};
+      let sizeCalOutput = "";
+
+      outputOptions.listeners = {
+        stdout: (data) => {
+          sizeCalOutput += data.toString();
+        },
+        stderr: (data) => {
+          sizeCalOutput += data.toString();
+        },
+      };
+
+      await exec.exec(`du ${inputs.dist_path}`, null, outputOptions);
+      core.setOutput("size", sizeCalOutput);
+
+      const arrayOutput = sizeCalOutput.split("\n");
+
+      const arrOp = arrayOutput.map((item) => {
+        const i = item.split(/(\s+)/);
+        branchesHeading.push(`${i[2]}`);
+        return parseInt(i[0]) * 1000;
+      });
+      branchesStats.push(arrOp);
+
+    }
 
 
 
