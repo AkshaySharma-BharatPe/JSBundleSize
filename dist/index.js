@@ -26393,7 +26393,8 @@ async function run() {
   try {
     const token = core.getInput("token");
     console.log("Initializing oktokit with token", token);
-    const octokit = new github.GitHub(token);
+    // const octokit = new github.GitHub(token);
+    const octokit = new github.getOctokit(token);
     const context = github.context,
     pull_request = context.payload.pull_request;
     const bootstrap = core.getInput("bootstrap"),
