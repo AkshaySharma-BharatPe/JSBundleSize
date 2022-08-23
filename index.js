@@ -1,7 +1,8 @@
 const core = require("@actions/core");
 const exec = require("@actions/exec");
 const github = require("@actions/github");
-const { Octokit } = require("@octokit/rest");
+// const { Octokit } = require("@octokit/rest");
+const { Octokit } = require("@octokit/action");
 
 async function run() {
   function bytesToSize(bytes) {
@@ -14,12 +15,10 @@ async function run() {
   try {
     const token = core.getInput("token");
 
-    const octokit2 = new github.getOctokit(token);
+    // const octokit2 = new github.getOctokit(token);
 
 
-    const octokitv2 = new Octokit({
-      auth: token,
-    });
+    const octokitv2 = new Octokit();
 
     console.log("Initializing oktokit with token", token);
     const octokit = new github.GitHub(token);
@@ -138,14 +137,7 @@ async function run() {
       );
     }
 
-    await octokit2.rest.issues.createComment({
-      owner,
-      repo,
-      issue_number: issueNumber,
-      body: coverage,
-    });
-
-    octokit2.rest.issues.createComment({
+    await octokitv2.rest.issues.createComment({
       owner,
       repo,
       issue_number: issueNumber,
@@ -153,6 +145,13 @@ async function run() {
     });
 
     octokitv2.rest.issues.createComment({
+      owner,
+      repo,
+      issue_number: issueNumber,
+      body: coverage,
+    });
+
+    octokitv2.issues.createComment({
       owner,
       repo,
       issue_number: issueNumber,
