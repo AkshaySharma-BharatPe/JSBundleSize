@@ -31481,9 +31481,21 @@ const { Octokit } = __nccwpck_require__(1563);
 
 
 async function run() {
+  // function bytesToSize(bytes) {
+  //   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  //   if (bytes === 0) return "0 Byte";
+  //   const i = parseInt(Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)));
+  //   return (bytes / Math.pow(1024, i)).toFixed(2) + " " + sizes[i];
+  // }
+
   try {
     const inputs = {
       token: core.getInput("token"),
+      bootstrap : core.getInput("bootstrap"),
+      build_command : core.getInput("build_command"),
+      dist_path : core.getInput("dist_path"),
+      base_branch : core.getInput("base_branch"),
+      head_branch : core.getInput("head_branch"),
     };
 
     const {
@@ -31503,6 +31515,7 @@ async function run() {
       auth: inputs.token
     })
 
+    console.log(inputs.token, inputs.bootstrap, inputs.build_command, inputs.dist_path, inputs.base_branch, inputs.head_branch);
 
     const coverage = `<!--json:nMeta)}-->
 |${inputs.title}| %                           | values                                                              |
