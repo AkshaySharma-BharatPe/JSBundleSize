@@ -83,12 +83,12 @@ async function run() {
 
 
 
-    const coverage = `|Files Type| %                           | values                                                              |
-|---------------|:---------------------------:|:-------------------------------------------------------------------:|
-|Statements     |Statements|Statements|
-|Branches       |Statements  |Statements   |
-|Functions      |Statements|Statements  |
-|Lines          |Statements     |Statements          |
+    const coverage = `|Files Type| Old Stats (${inputs.head_branch})  | New Stats (${inputs.base_branch})| Differences |
+|---------------|:---------------------------:|:---------------------------------:|:---------------------------------:|
+|Statements     |Statements|Statements|Statements|
+|Branches       |Statements  |Statements   |Statements   |
+|Functions      |Statements|Statements  |Statements  |
+|Lines          |Statements     |Statements          |Statements          |
 `;
 
     octokit.rest.issues.createComment({
