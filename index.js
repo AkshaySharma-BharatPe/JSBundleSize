@@ -1,8 +1,6 @@
 const core = require("@actions/core");
 const exec = require("@actions/exec");
 const github = require("@actions/github");
-// const { Octokit } = require("@octokit/rest");
-const { Octokit } = require("@octokit/action");
 
 async function run() {
   function bytesToSize(bytes) {
@@ -15,11 +13,6 @@ async function run() {
   try {
     const token = core.getInput("token");
 
-    // const octokit2 = new github.getOctokit(token);
-
-
-    const octokitv2 = new Octokit();
-
     console.log("Initializing oktokit with token", token);
     const octokit = new github.GitHub(token);
     const context = github.context,
@@ -29,16 +22,6 @@ async function run() {
       dist_path = core.getInput("dist_path"),
       base_branch = core.getInput("base_branch"),
       head_branch = core.getInput("head_branch");
-
-    const {
-        payload: { pull_request: pullRequest, repository }
-      } = github.context;
-    
-    const { number: issueNumber } = pullRequest;
-    const { full_name: repoFullName } = repository;
-    const [owner, repo] = repoFullName.split("/");
-
-    // const octokit2 = new github.getOctokit(token);
 
     await exec.exec(`git fetch`);
     const branches = [head_branch, base_branch];
@@ -119,15 +102,6 @@ async function run() {
     | ${branchesHeading[3]}  | ${bytesToSize(branchesStats[0][3])}  |   ${bytesToSize(branchesStats[1][3])}  | ${bytesToSize(branchesStats[0][3] - branchesStats[1][3])}|
     `;
 
-    const coverage = `<!--json:-->
-    |test| %                           | values                                                              |
-    |---------------|:---------------------------:|:-------------------------------------------------------------------:|
-    |Statements     |1%|( wdfre / sdfr )|
-    |Branches       |233%  |( sdfre / scfed )    |
-    |Functions      |de3e% |( sdfre/ cesdf )  |
-    |Lines          |3rfd%     |( sdfr / sdfed )          |
-    `;
-
     if (pull_request) {
       octokit.issues.createComment(
         Object.assign(Object.assign({}, context.repo), {
@@ -136,28 +110,6 @@ async function run() {
         })
       );
     }
-
-    await octokitv2.rest.issues.createComment({
-      owner,
-      repo,
-      issue_number: issueNumber,
-      body: coverage,
-    });
-
-    octokitv2.rest.issues.createComment({
-      owner,
-      repo,
-      issue_number: issueNumber,
-      body: coverage,
-    });
-
-    octokitv2.issues.createComment({
-      owner,
-      repo,
-      issue_number: issueNumber,
-      body: resultv2,
-    });
-
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
