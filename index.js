@@ -22,6 +22,16 @@ async function run() {
       base_branch = core.getInput("base_branch"),
       head_branch = core.getInput("head_branch");
 
+    const {
+        payload: { pull_request: pullRequest, repository }
+      } = github.context;
+    
+    const { number: issueNumber } = pullRequest;
+    const { full_name: repoFullName } = repository;
+    const [owner, repo] = repoFullName.split("/");
+
+    const octokit2 = new github.getOctokit(token);
+
     await exec.exec(`git fetch`);
     const branches = [head_branch, base_branch];
     const branchesStats = [];
@@ -93,13 +103,13 @@ async function run() {
     console.table(statsDifference);
 
     const resultv2 = `
-    | Files Type  | Old Size (${head_branch}) | New Size (${base_branch}) | Difference 
-    | ------------- | ------------- |  ------------- | ------------- |
-    | ${branchesHeading[0]}  | ${bytesToSize(branchesStats[0][0])}  |   ${bytesToSize(branchesStats[1][0])}  | ${bytesToSize(branchesStats[0][0] - branchesStats[1][0])}
-    | ${branchesHeading[1]}  | ${bytesToSize(branchesStats[0][1])} |   ${bytesToSize(branchesStats[1][1])}  | ${bytesToSize(branchesStats[0][1] - branchesStats[1][1])}
-    | ${branchesHeading[2]}  | ${bytesToSize(branchesStats[0][2])}  |   ${bytesToSize(branchesStats[1][2])}  | ${bytesToSize(branchesStats[0][2] - branchesStats[1][2])}
-    | ${branchesHeading[3]}  | ${bytesToSize(branchesStats[0][3])}  |   ${bytesToSize(branchesStats[1][3])}  | ${bytesToSize(branchesStats[0][3] - branchesStats[1][3])}
-    `
+    | Files Type  | Old Size (${head_branch}) | New Size (${base_branch}) | Difference |
+    | ------------- |:------------- |:------------- |:-------------:|
+    | ${branchesHeading[0]}  | ${bytesToSize(branchesStats[0][0])}  |   ${bytesToSize(branchesStats[1][0])}  | ${bytesToSize(branchesStats[0][0] - branchesStats[1][0])}|
+    | ${branchesHeading[1]}  | ${bytesToSize(branchesStats[0][1])} |   ${bytesToSize(branchesStats[1][1])}  | ${bytesToSize(branchesStats[0][1] - branchesStats[1][1])}|
+    | ${branchesHeading[2]}  | ${bytesToSize(branchesStats[0][2])}  |   ${bytesToSize(branchesStats[1][2])}  | ${bytesToSize(branchesStats[0][2] - branchesStats[1][2])}|
+    | ${branchesHeading[3]}  | ${bytesToSize(branchesStats[0][3])}  |   ${bytesToSize(branchesStats[1][3])}  | ${bytesToSize(branchesStats[0][3] - branchesStats[1][3])}|
+    `;
 
     if (pull_request) {
       octokit.issues.createComment(
@@ -109,6 +119,13 @@ async function run() {
         })
       );
     }
+
+    await octokit2.issues.createComment({
+      owner,
+      repo,
+      issue_number: issueNumber,
+      body: resultv2,
+    });
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
