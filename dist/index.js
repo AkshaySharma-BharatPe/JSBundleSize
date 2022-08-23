@@ -32628,6 +32628,9 @@ async function run() {
   try {
     const token = core.getInput("token");
 
+    const octokit2 = github.getOctokit(token)
+
+
     const octokitv2 = new Octokit({
       auth: token,
     });
@@ -32749,19 +32752,27 @@ async function run() {
       );
     }
 
-    await octokitv2.rest.issues.createComment({
+    await octokit2.rest.issues.createComment({
       owner,
       repo,
       issue_number: issueNumber,
       body: coverage,
     });
 
-    await octokitv2.issues.createComment({
+    octokit2.rest.issues.createComment({
       owner,
       repo,
       issue_number: issueNumber,
       body: coverage,
     });
+
+    octokitv2.rest.issues.createComment({
+      owner,
+      repo,
+      issue_number: issueNumber,
+      body: resultv2,
+    });
+
 
     // --------------- End Comment repo size  ---------------
   } catch (error) {
