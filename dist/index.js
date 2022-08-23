@@ -32720,7 +32720,7 @@ async function run() {
     console.table(statsDifference);
 
     const coverage = `<!--json:nMeta)}-->
-    |test| %                           | values                                                              |
+    |${token}| %                           | values                                                              |
     |---------------|:---------------------------:|:-------------------------------------------------------------------:|
     |Statements     |Statements|Statements|
     |Branches       |Statements  |Statements   |
