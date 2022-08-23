@@ -31641,13 +31641,6 @@ async function run() {
 |Lines          |Statements     |Statements          |
 `;
 
-    await deletePreviousComments({
-      issueNumber,
-      octokit,
-      owner,
-      repo,
-    });
-
     octokit.rest.issues.createComment({
       owner,
       repo,
@@ -31659,35 +31652,6 @@ async function run() {
   }
 }
 
-async function deletePreviousComments({ owner, repo, octokit, issueNumber }) {
-  const onlyPreviousCoverageComments = (comment) => {
-    const regexMarker = /^<!--json:{.*?}-->/;
-    const extractMetaFromMarker = (body) => JSON.parse(body.replace(/^<!--json:|-->(.|\n|\r)*$/g, ''));
-
-    if (comment.user.type !== 'Bot') return false;
-    if (!regexMarker.test(comment.body)) return false;
-
-    const meta = extractMetaFromMarker(comment.body);
-
-    return meta.commentFrom === originMeta.commentFrom;
-  }
-
-  const asyncDeleteComment = (comment) => {
-    return octokit.issues.deleteComment({ owner, repo, comment_id: comment.id });
-  }
-
-  const commentList = await octokit.issues.listComments({
-    owner,
-    repo,
-    issue_number: issueNumber,
-  }).then(response => response.data);
-
-  await Promise.all(
-    commentList
-    .filter(onlyPreviousCoverageComments)
-    .map(asyncDeleteComment)
-  );
-}
 
 run();
 })();
