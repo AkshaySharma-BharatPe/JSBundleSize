@@ -32697,12 +32697,12 @@ async function run() {
 
 
 
-    const coverage = `|Files Type| Old Stats (${inputs.head_branch})  | New Stats (${inputs.base_branch})| Differences |
-|---------------|:---------------------------:|:---------------------------------:|:---------------------------------:|
-|Statements     |Statements|Statements|Statements|
-|Branches       |Statements  |Statements   |Statements   |
-|Functions      |Statements|Statements  |Statements  |
-|Lines          |Statements     |Statements          |Statements          |
+    const coverage = `|Files Type|Old Stats (${inputs.head_branch})|New Stats (${inputs.base_branch})|Differences|
+|-----|:-----:|:-----:|:-----:|
+|${branchesHeading[0]}|Statements|Statements|Statements|
+|${branchesHeading[1]}|Statements|Statements|Statements|
+|${branchesHeading[2]}|Statements|Statements|Statements|
+|${branchesHeading[3]}|Statements|Statements|Statements|
 `;
 
     octokit.rest.issues.createComment({
