@@ -14,7 +14,7 @@ async function run() {
   try {
     const token = core.getInput("token");
 
-    const octokit2 = github.getOctokit(token)
+    const octokit2 = new github.getOctokit(token);
 
 
     const octokitv2 = new Octokit({
