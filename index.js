@@ -6,12 +6,12 @@ const exec = require("@actions/exec");
 
 
 async function run() {
-  // function bytesToSize(bytes) {
-  //   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  //   if (bytes === 0) return "0 Byte";
-  //   const i = parseInt(Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)));
-  //   return (bytes / Math.pow(1024, i)).toFixed(2) + " " + sizes[i];
-  // }
+  function bytesToSize(bytes) {
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    if (bytes === 0) return "0 Byte";
+    const i = parseInt(Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)));
+    return (bytes / Math.pow(1024, i)).toFixed(2) + " " + sizes[i];
+  }
 
   try {
     const inputs = {
@@ -85,10 +85,10 @@ async function run() {
 
     const coverage = `|Files Type|Old Stats (${inputs.head_branch})|New Stats (${inputs.base_branch})|Differences|
 |-----|:-----:|:-----:|:-----:|
-|${branchesHeading[0]}|Statements|Statements|Statements|
-|${branchesHeading[1]}|Statements|Statements|Statements|
-|${branchesHeading[2]}|Statements|Statements|Statements|
-|${branchesHeading[3]}|Statements|Statements|Statements|
+|${branchesHeading[0]}|${bytesToSize(branchesStats[0][0])}|${bytesToSize(branchesStats[1][0])}|${bytesToSize(branchesStats[0][0] - branchesStats[1][0])}|
+|${branchesHeading[1]}|${bytesToSize(branchesStats[0][1])}|${bytesToSize(branchesStats[1][1])}|${bytesToSize(branchesStats[0][1] - branchesStats[1][1])}|
+|${branchesHeading[2]}|${bytesToSize(branchesStats[0][2])}|${bytesToSize(branchesStats[1][2])}|${bytesToSize(branchesStats[0][2] - branchesStats[1][2])}|
+|${branchesHeading[3]}|${bytesToSize(branchesStats[0][3])}|${bytesToSize(branchesStats[1][3])}|${bytesToSize(branchesStats[0][3] - branchesStats[1][3])}|
 `;
 
     octokit.rest.issues.createComment({
