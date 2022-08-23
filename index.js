@@ -12,7 +12,10 @@ async function run() {
   }
 
   try {
-    const octokitv2 = new Octokit();
+    const octokitv2 = new Octokit({
+      auth: token,
+    });
+
     const token = core.getInput("token");
     console.log("Initializing oktokit with token", token);
     const octokit = new github.GitHub(token);
