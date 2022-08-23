@@ -1,6 +1,8 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { Octokit } = require("@octokit/rest");
+const exec = require("@actions/exec");
+
 
 
 async function run() {
@@ -38,7 +40,15 @@ async function run() {
       auth: inputs.token
     })
 
-    console.log(inputs.token, inputs.bootstrap, inputs.build_command, inputs.dist_path, inputs.base_branch, inputs.head_branch);
+    await exec.exec(`git fetch`);
+    const branches = [inputs.head_branch, inputs.base_branch];
+    const branchesStats = [];
+    const branchesHeading = [];
+
+    console.log(branches, branchesStats, branchesHeading);
+
+
+
 
     const coverage = `<!--json:nMeta)}-->
 |${inputs.title}| %                           | values                                                              |
