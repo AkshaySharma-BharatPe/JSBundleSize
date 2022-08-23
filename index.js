@@ -122,6 +122,8 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
+const { Octokit } = require("@octokit/rest");
+
 
 const originMeta = {
   commentFrom: 'Comment Test Coverage as table',
@@ -146,7 +148,12 @@ async function run() {
     const { full_name: repoFullName } = repository;
     const [owner, repo] = repoFullName.split("/");
 
-    const octokit = new github.getOctokit(inputs.token);
+    const octokit = new Octokit({
+      auth: inputs.token
+    })
+
+
+    // const octokit = new github.getOctokit(inputs.token);
 
     const coverage = `<!--json:nMeta)}-->
 |${inputs.title}| %                           | values                                                              |
@@ -164,7 +171,7 @@ async function run() {
       repo,
     });
 
-    await octokit.issues.createComment({
+    octokit.rest.issues.createComment({
       owner,
       repo,
       issue_number: issueNumber,
