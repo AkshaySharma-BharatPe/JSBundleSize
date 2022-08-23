@@ -30,7 +30,7 @@ async function run() {
     const { full_name: repoFullName } = repository;
     const [owner, repo] = repoFullName.split("/");
 
-    const octokit2 = new github.getOctokit(token);
+    // const octokit2 = new github.getOctokit(token);
 
     await exec.exec(`git fetch`);
     const branches = [head_branch, base_branch];
@@ -120,7 +120,7 @@ async function run() {
       );
     }
 
-    await octokit2.issues.createComment({
+    await octokit.issues.createComment({
       owner,
       repo,
       issue_number: issueNumber,
