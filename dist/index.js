@@ -32697,8 +32697,7 @@ async function run() {
 
 
 
-    const coverage = `<!--json:nMeta)}-->
-|${inputs.title}| %                           | values                                                              |
+    const coverage = `|Files Type| %                           | values                                                              |
 |---------------|:---------------------------:|:-------------------------------------------------------------------:|
 |Statements     |Statements|Statements|
 |Branches       |Statements  |Statements   |
