@@ -117,6 +117,15 @@ async function run() {
     | ${branchesHeading[3]}  | ${bytesToSize(branchesStats[0][3])}  |   ${bytesToSize(branchesStats[1][3])}  | ${bytesToSize(branchesStats[0][3] - branchesStats[1][3])}|
     `;
 
+    const coverage = `<!--json:-->
+    |test| %                           | values                                                              |
+    |---------------|:---------------------------:|:-------------------------------------------------------------------:|
+    |Statements     |1%|( wdfre / sdfr )|
+    |Branches       |233%  |( sdfre / scfed )    |
+    |Functions      |de3e% |( sdfre/ cesdf )  |
+    |Lines          |3rfd%     |( sdfr / sdfed )          |
+    `;
+
     if (pull_request) {
       octokit.issues.createComment(
         Object.assign(Object.assign({}, context.repo), {
@@ -130,7 +139,14 @@ async function run() {
       owner,
       repo,
       issue_number: issueNumber,
-      body: resultv2,
+      body: coverage,
+    });
+
+    await octokitv2.issues.createComment({
+      owner,
+      repo,
+      issue_number: issueNumber,
+      body: coverage,
     });
 
     // --------------- End Comment repo size  ---------------
